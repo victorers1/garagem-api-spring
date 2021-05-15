@@ -22,7 +22,7 @@ public class UsuarioService {
     }
 
     public Usuario findByEmail(String email) {
-        return usuarioRepository.findByCpf(email);
+        return usuarioRepository.findByEmail(email);
     }
 
     public List<Usuario> findAll() {

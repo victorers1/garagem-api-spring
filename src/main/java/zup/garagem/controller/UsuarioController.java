@@ -1,7 +1,5 @@
 package zup.garagem.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,11 +11,14 @@ import zup.garagem.service.UsuarioService;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/usuarios")
 public class UsuarioController {
-    @Autowired
+
     private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService1) {
+        this.usuarioService = usuarioService1;
+    }
 
     @GetMapping
     public List<Usuario> listar() {

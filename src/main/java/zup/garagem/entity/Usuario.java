@@ -2,14 +2,13 @@ package zup.garagem.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
-import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
 @Entity
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +22,16 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dataNascimento;
+
+    public Usuario(String nome, String email, String cpf, LocalDate dataNascimento) {
+        this.nome = nome;
+        this.email = email;
+        this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
+    }
+
+    public Usuario() {
+
+    }
 }
