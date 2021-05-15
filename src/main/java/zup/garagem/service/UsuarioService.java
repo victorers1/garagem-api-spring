@@ -1,7 +1,10 @@
 package zup.garagem.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import zup.garagem.dto.UsuarioDTO;
 import zup.garagem.entity.Usuario;
 import zup.garagem.repository.UsuarioRepository;
 
@@ -12,6 +15,7 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    ModelMapper modelMapper = new ModelMapper();
 
     public Usuario findByCpf(String cpf) {
         return usuarioRepository.findByCpf(cpf);
@@ -25,7 +29,8 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Usuario save(Usuario u) {
-        return usuarioRepository.save(u);
+    public UsuarioDTO save(UsuarioDTO usuarioDTO) {
+        Usuario novoUsuario = modelMapper.map(usuarioDTO, Usuario.class);
+        return modelMapper.map(usuarioRepository.save(novoUsuario), UsuarioDTO.class);
     }
 }

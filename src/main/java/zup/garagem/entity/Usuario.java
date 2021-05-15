@@ -23,6 +23,6 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dataNascimento;
 }
