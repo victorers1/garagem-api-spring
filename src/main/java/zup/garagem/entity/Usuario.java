@@ -3,9 +3,14 @@ package zup.garagem.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
-import javax.persistence.*;
-import java.time.LocalDate;
+import lombok.Getter;
+import zup.garagem.dto.UsuarioDTO;
 
+import javax.persistence.*;
+import java.util.Date;
+
+
+@Getter
 @Entity
 public class Usuario {
 
@@ -22,9 +27,11 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    private LocalDate dataNascimento;
 
-    public Usuario(String nome, String email, String cpf, LocalDate dataNascimento) {
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy")
+    private Date dataNascimento;
+
+    public Usuario(String nome, String email, String cpf, Date dataNascimento) {
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
@@ -32,6 +39,9 @@ public class Usuario {
     }
 
     public Usuario() {
+    }
 
+    public UsuarioDTO toDTO() {
+        return new UsuarioDTO(id, nome, email, cpf, dataNascimento);
     }
 }
