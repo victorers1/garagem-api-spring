@@ -7,7 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import zup.garagem.client.FIPEClient;
 import zup.garagem.dto.ErroValidacaoDTO;
-import zup.garagem.dto.VeiculoDTO;
+import zup.garagem.dto.VeiculoRequestDTO;
+import zup.garagem.dto.VeiculoResponseDTO;
+import zup.garagem.entity.Veiculo;
 import zup.garagem.repository.VeiculoRepository;
 
 import java.util.List;
@@ -26,25 +28,26 @@ public class VeiculoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VeiculoDTO>> listar() {
+    public ResponseEntity<List<VeiculoResponseDTO>> listar() {
         var veiculosDTO = veiculoRepository
                 .findAll()
                 .stream()
-                .map(v -> v.toDTO())
+                .map(Veiculo::toResponseDTO)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(veiculosDTO);
     }
 
     @PostMapping
-    public ResponseEntity<?> cadastrar(@Validated @RequestBody VeiculoDTO v, BindingResult result) {
+    public ResponseEntity<?> cadastrar(@Validated @RequestBody VeiculoRequestDTO v, BindingResult result) {
         if (result.hasErrors()) {
             ErroValidacaoDTO erro = new ErroValidacaoDTO(result, "Erro ao cadastrar veículo");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
         }
 
-        var novoVeiculo = v.toVeiculo();
+        var veiculoFipeDTO = fipeClient.getVeiculo(v.getMarcaId(), v.getModeloId(), v.getAnoModelo());
+        var novoVeiculo = veiculoFipeDTO.toVeiculo();
         novoVeiculo = veiculoRepository.save(novoVeiculo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculo.toDTO());
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculo);
     }
 }

@@ -2,7 +2,6 @@ package zup.garagem.dto;
 
 import lombok.Getter;
 
-@Getter
 public class ErroDTO {
     private String campo;
     private String mensagem;
@@ -13,4 +12,12 @@ public class ErroDTO {
     }
 
     public ErroDTO(){}
+
+    public String getCampo() {
+        return campo;
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
 }

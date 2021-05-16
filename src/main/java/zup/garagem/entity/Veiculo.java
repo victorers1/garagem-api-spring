@@ -1,7 +1,7 @@
 package zup.garagem.entity;
 
 import lombok.Getter;
-import zup.garagem.dto.VeiculoDTO;
+import zup.garagem.dto.VeiculoResponseDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,32 +17,28 @@ public class Veiculo {
     private Long id;
 
     @NotNull
-    private Long marcaId;
     private String marca;
 
     @NotNull
-    private Long modeloId;
     private String modelo;
 
     @NotNull
-    private Integer ano;
+    private String anoModelo;
 
     private String valor;
 
-    public Veiculo(Long id, Long marcaId, String marca, Long modeloId, String modelo, Integer ano, String valor) {
+    public Veiculo(Long id, String marca, String modelo, String anoModelo, String valor) {
         this.id = id;
-        this.marcaId = marcaId;
         this.marca = marca;
-        this.modeloId = modeloId;
         this.modelo = modelo;
-        this.ano = ano;
+        this.anoModelo = anoModelo;
         this.valor = valor;
     }
 
     public Veiculo() {
     }
 
-    public VeiculoDTO toDTO() {
-        return new VeiculoDTO(id, marcaId, marca, modeloId, modelo, ano, valor);
+    public VeiculoResponseDTO toResponseDTO() {
+        return new VeiculoResponseDTO(id, marca, modelo, anoModelo);
     }
 }
