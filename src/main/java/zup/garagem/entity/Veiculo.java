@@ -17,24 +17,32 @@ public class Veiculo {
     private Long id;
 
     @NotNull
+    private Long marcaId;
     private String marca;
 
     @NotNull
+    private Long modeloId;
     private String modelo;
 
     @NotNull
     private Integer ano;
 
-    public Veiculo(Long id , String marca, String modelo, Integer ano) {
+    private String valor;
+
+    public Veiculo(Long id, Long marcaId, String marca, Long modeloId, String modelo, Integer ano, String valor) {
         this.id = id;
+        this.marcaId = marcaId;
         this.marca = marca;
+        this.modeloId = modeloId;
         this.modelo = modelo;
         this.ano = ano;
+        this.valor = valor;
     }
 
-    public Veiculo() {}
+    public Veiculo() {
+    }
 
-    public VeiculoDTO toDTO(){
-        return new VeiculoDTO(id, marca, modelo, ano);
+    public VeiculoDTO toDTO() {
+        return new VeiculoDTO(id, marcaId, marca, modeloId, modelo, ano, valor);
     }
 }

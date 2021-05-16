@@ -1,10 +1,14 @@
 package zup.garagem.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import zup.garagem.client.FIPEClient;
 import zup.garagem.dto.ErroValidacaoDTO;
 import zup.garagem.dto.VeiculoDTO;
 import zup.garagem.repository.VeiculoRepository;
@@ -18,9 +22,11 @@ import java.util.stream.Collectors;
 public class VeiculoController {
 
     private final VeiculoRepository veiculoRepository;
+    private final FIPEClient fipeClient;
 
-    public VeiculoController(VeiculoRepository veiculoRepository){
+    public VeiculoController(VeiculoRepository veiculoRepository, FIPEClient fipeClient){
         this.veiculoRepository = veiculoRepository;
+        this.fipeClient = fipeClient;
     }
 
     @GetMapping
@@ -42,8 +48,8 @@ public class VeiculoController {
         }
 
         var novoVeiculo = v.toVeiculo();
+//        var marca =
         novoVeiculo = veiculoRepository.save(novoVeiculo);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculo.toDTO());
-
     }
 }
