@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients//(basePackageClasses = {zup.garagem.client.FIPEClient.class})
+@EnableFeignClients
 public class GaragemApplication {
     public static void main(String[] args) {
         SpringApplication.run(GaragemApplication.class, args);

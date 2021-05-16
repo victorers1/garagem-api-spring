@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import zup.garagem.client.FIPEClient;
+import zup.garagem.dto.ErroDTO;
 import zup.garagem.dto.ErroValidacaoDTO;
 import zup.garagem.dto.VeiculoRequestDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
@@ -41,11 +42,17 @@ public class VeiculoController {
     @PostMapping
     public ResponseEntity<?> cadastrar(@Validated @RequestBody VeiculoRequestDTO v, BindingResult result) {
         if (result.hasErrors()) {
-            ErroValidacaoDTO erro = new ErroValidacaoDTO(result, "Erro ao cadastrar veículo");
+            var erro = new ErroValidacaoDTO(result, "Erro ao cadastrar veículo");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
         }
 
         var veiculoFipeDTO = fipeClient.getVeiculo(v.getMarcaId(), v.getModeloId(), v.getAnoModelo());
+        
+        if(!veiculoFipeDTO.validar()){
+            var erroDTO = new ErroDTO("FIPE Request", "Não foi possível consultar detalhes do veículo");
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erroDTO);
+        }
+
         var novoVeiculo = veiculoFipeDTO.toVeiculo();
         novoVeiculo = veiculoRepository.save(novoVeiculo);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculo);

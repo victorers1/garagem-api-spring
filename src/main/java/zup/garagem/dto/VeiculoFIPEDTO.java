@@ -7,40 +7,54 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 public class VeiculoFIPEDTO {
-    private Long id;
+    private final Long id;
 
     @NotNull(message = "Marca é obrigatória")
-    private String Marca;
+    private final String Marca;
 
     @NotNull(message = "Modelo é obrigatório")
-    private String Modelo;
+    private final String Modelo;
 
     @NotNull(message = "AnoModelo é obrigatório")
-    private String AnoModelo;
+    private final String AnoModelo;
 
-    private String Valor;
-    private String Combustivel;
-    private String CodigoFipe;
-    private String MesReferencia;
-    private String TipoVeiculo;
-    private String SiglaCombustivel;
+    private final String Valor;
+    private final String Combustivel;
+    private final String CodigoFipe;
+    private final String MesReferencia;
+    private final String TipoVeiculo;
+    private final String SiglaCombustivel;
 
-    public VeiculoFIPEDTO() {}
+    public VeiculoFIPEDTO(Long id,
+                          String Marca,
+                          String Modelo,
+                          String AnoModelo,
+                          String Valor,
+                          String Combustivel,
+                          String CodigoFipe,
+                          String MesReferencia,
+                          String TipoVeiculo,
+                          String SiglaCombustivel) {
 
-    public VeiculoFIPEDTO(Long id, String marca, String modelo, String anoModelo, String valor, String combustivel, String codigoFipe, String mesReferencia, String tipoVeiculo, String siglaCombustivel) {
         this.id = id;
-        this.Marca = marca;
-        this.Modelo = modelo;
-        this.AnoModelo = anoModelo;
-        this.Valor = valor;
-        this.Combustivel = combustivel;
-        this.CodigoFipe = codigoFipe;
-        this.MesReferencia = mesReferencia;
-        this.TipoVeiculo = tipoVeiculo;
-        this.SiglaCombustivel = siglaCombustivel;
+        this.Marca = Marca;
+        this.Modelo = Modelo;
+        this.AnoModelo = AnoModelo;
+        this.Valor = Valor;
+        this.Combustivel = Combustivel;
+        this.CodigoFipe = CodigoFipe;
+        this.MesReferencia = MesReferencia;
+        this.TipoVeiculo = TipoVeiculo;
+        this.SiglaCombustivel = SiglaCombustivel;
     }
 
     public Veiculo toVeiculo() {
         return new Veiculo(id, Marca, Modelo, AnoModelo, Valor);
+    }
+
+    public Boolean validar() {
+        return Marca != null && !Marca.isBlank() &&
+                Modelo != null && !Modelo.isBlank() &&
+                AnoModelo != null && !AnoModelo.isBlank();
     }
 }

@@ -7,7 +7,7 @@ public class VeiculoResponseDTO {
     private Long id;
     private String marca;
     private String modelo;
-    private String AnoModelo;
+    private String anoModelo;
 
     public VeiculoResponseDTO() {
     }
@@ -16,6 +16,6 @@ public class VeiculoResponseDTO {
         this.id = id;
         this.marca = marca;
         this.modelo = modelo;
-        this.AnoModelo = anoModelo;
+        this.anoModelo = anoModelo;
     }
 }

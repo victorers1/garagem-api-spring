@@ -2,7 +2,6 @@ package zup.garagem.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
-
 import lombok.Getter;
 import zup.garagem.dto.UsuarioDTO;
 
@@ -25,7 +24,7 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date dataNascimento;
 
     public Usuario(String nome, String email, String cpf, Date dataNascimento) {
@@ -35,7 +34,8 @@ public class Usuario {
         this.dataNascimento = dataNascimento;
     }
 
-    public Usuario() {}
+    public Usuario() {
+    }
 
     public UsuarioDTO toDTO() {
         return new UsuarioDTO(id, nome, email, cpf, dataNascimento);

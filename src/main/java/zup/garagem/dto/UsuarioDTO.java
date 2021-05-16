@@ -1,7 +1,6 @@
 package zup.garagem.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -40,7 +39,8 @@ public class UsuarioDTO {
         this.dataNascimento = dataNascimento;
     }
 
-    public UsuarioDTO(){}
+    public UsuarioDTO() {
+    }
 
     public Usuario toUsuario() {
         return new Usuario(nome, email, cpf, dataNascimento);

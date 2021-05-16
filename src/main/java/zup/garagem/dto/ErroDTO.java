@@ -1,7 +1,5 @@
 package zup.garagem.dto;
 
-import lombok.Getter;
-
 public class ErroDTO {
     private String campo;
     private String mensagem;
@@ -10,8 +8,6 @@ public class ErroDTO {
         this.campo = campo;
         this.mensagem = mensagem;
     }
-
-    public ErroDTO(){}
 
     public String getCampo() {
         return campo;
