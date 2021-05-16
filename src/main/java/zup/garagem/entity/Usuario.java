@@ -9,11 +9,9 @@ import zup.garagem.dto.UsuarioDTO;
 import javax.persistence.*;
 import java.util.Date;
 
-
 @Getter
 @Entity
 public class Usuario {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +25,6 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy")
     private Date dataNascimento;
 
@@ -38,8 +35,7 @@ public class Usuario {
         this.dataNascimento = dataNascimento;
     }
 
-    public Usuario() {
-    }
+    public Usuario() {}
 
     public UsuarioDTO toDTO() {
         return new UsuarioDTO(id, nome, email, cpf, dataNascimento);

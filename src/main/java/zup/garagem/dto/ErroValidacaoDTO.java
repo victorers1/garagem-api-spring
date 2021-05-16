@@ -12,8 +12,7 @@ public class ErroValidacaoDTO {
     private String mensagem;
     private List<ErroDTO> erros = new ArrayList<>();
 
-    public ErroValidacaoDTO() {
-    }
+    public ErroValidacaoDTO() {}
 
     public ErroValidacaoDTO(BindingResult resultadoValidacao, String msg) {
         this.mensagem = msg;

@@ -9,7 +9,6 @@ import zup.garagem.dto.ErroValidacaoDTO;
 import zup.garagem.dto.UsuarioDTO;
 import zup.garagem.entity.Usuario;
 import zup.garagem.repository.UsuarioRepository;
-import zup.garagem.service.UsuarioService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,19 +23,14 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public List<UsuarioDTO> listar() {
-        return usuarioRepository
+    public ResponseEntity<List<UsuarioDTO>> listar() {
+        var usuariosDTO = usuarioRepository
                 .findAll()
                 .stream()
                 .map(Usuario::toDTO)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(usuariosDTO);
     }
-
-//    @GetMapping
-//    public ResponseEntity<Usuario> findByCpf(@Validated @RequestBody String cpf) {
-//        UsuarioDTO u = usuarioService.findByCpf(cpf);
-//        return ResponseEntity.ok(new UsuarioDTO());
-//    }
 
     @PostMapping
     public ResponseEntity<?> cadastrar(@Validated @RequestBody UsuarioDTO u, BindingResult result) {
