@@ -1,12 +1,10 @@
 package zup.garagem.entity;
 
 import lombok.Getter;
+import org.springframework.context.annotation.EnableMBeanExport;
 import zup.garagem.dto.VeiculoResponseDTO;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -27,18 +25,22 @@ public class Veiculo {
 
     private String valor;
 
-    public Veiculo(Long id, String marca, String modelo, String anoModelo, String valor) {
+    @ManyToOne @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuarioDono;
+
+    public Veiculo(Long id, String marca, String modelo, String anoModelo, String valor, Usuario usuarioDono) {
         this.id = id;
         this.marca = marca;
         this.modelo = modelo;
         this.anoModelo = anoModelo;
         this.valor = valor;
+        this.usuarioDono = usuarioDono;
     }
 
     public Veiculo() {
     }
 
     public VeiculoResponseDTO toResponseDTO() {
-        return new VeiculoResponseDTO(id, marca, modelo, anoModelo);
+        return new VeiculoResponseDTO(id, marca, modelo, anoModelo, usuarioDono.getId());
     }
 }

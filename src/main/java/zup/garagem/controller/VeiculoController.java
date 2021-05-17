@@ -7,10 +7,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import zup.garagem.client.FIPEClient;
 import zup.garagem.dto.ErroDTO;
-import zup.garagem.dto.ErroValidacaoDTO;
+import zup.garagem.dto.ListaErrosDTO;
 import zup.garagem.dto.VeiculoRequestDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
 import zup.garagem.entity.Veiculo;
+import zup.garagem.repository.UsuarioRepository;
 import zup.garagem.repository.VeiculoRepository;
 
 import java.util.List;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 public class VeiculoController {
 
     private final VeiculoRepository veiculoRepository;
+    private final UsuarioRepository usuarioRepository;
     private final FIPEClient fipeClient;
 
-    public VeiculoController(VeiculoRepository veiculoRepository, FIPEClient fipeClient) {
+    public VeiculoController(VeiculoRepository veiculoRepository, UsuarioRepository usuarioRepository, FIPEClient fipeClient) {
         this.veiculoRepository = veiculoRepository;
+        this.usuarioRepository = usuarioRepository;
         this.fipeClient = fipeClient;
     }
 
@@ -40,21 +43,22 @@ public class VeiculoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> cadastrar(@Validated @RequestBody VeiculoRequestDTO v, BindingResult result) {
+    public ResponseEntity<?> criar(@Validated @RequestBody VeiculoRequestDTO v, BindingResult result) {
         if (result.hasErrors()) {
-            var erro = new ErroValidacaoDTO(result, "Erro ao cadastrar veículo");
+            var erro = new ListaErrosDTO(result, "Erro ao validar veículo");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+        }
+
+        var usuario = usuarioRepository.findById(v.getUsuarioId());
+
+        if (usuario.isEmpty()) {
+            var erro = new ErroDTO("usuarioId", "Usuario não existe");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
         }
 
         var veiculoFipeDTO = fipeClient.getVeiculo(v.getMarcaId(), v.getModeloId(), v.getAnoModelo());
-        
-        if(!veiculoFipeDTO.validar()){
-            var erroDTO = new ErroDTO("FIPE Request", "Não foi possível consultar detalhes do veículo");
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erroDTO);
-        }
-
-        var novoVeiculo = veiculoFipeDTO.toVeiculo();
+        var novoVeiculo = veiculoFipeDTO.toVeiculo(usuario.get());
         novoVeiculo = veiculoRepository.save(novoVeiculo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculo.toResponseDTO());
     }
 }

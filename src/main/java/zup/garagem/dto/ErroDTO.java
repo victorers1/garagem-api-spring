@@ -1,16 +1,16 @@
 package zup.garagem.dto;
 
 public class ErroDTO {
-    private String campo;
+    private String titulo;
     private String mensagem;
 
-    public ErroDTO(String campo, String mensagem) {
-        this.campo = campo;
+    public ErroDTO(String titulo, String mensagem) {
+        this.titulo = titulo;
         this.mensagem = mensagem;
     }
 
-    public String getCampo() {
-        return campo;
+    public String getTitulo() {
+        return titulo;
     }
 
     public String getMensagem() {

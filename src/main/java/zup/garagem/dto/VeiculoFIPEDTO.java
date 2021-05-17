@@ -1,6 +1,7 @@
 package zup.garagem.dto;
 
 import lombok.Getter;
+import zup.garagem.entity.Usuario;
 import zup.garagem.entity.Veiculo;
 
 import javax.validation.constraints.NotNull;
@@ -48,13 +49,7 @@ public class VeiculoFIPEDTO {
         this.SiglaCombustivel = SiglaCombustivel;
     }
 
-    public Veiculo toVeiculo() {
-        return new Veiculo(id, Marca, Modelo, AnoModelo, Valor);
-    }
-
-    public Boolean validar() {
-        return Marca != null && !Marca.isBlank() &&
-                Modelo != null && !Modelo.isBlank() &&
-                AnoModelo != null && !AnoModelo.isBlank();
+    public Veiculo toVeiculo(Usuario usuario) {
+        return new Veiculo(id, Marca, Modelo, AnoModelo, Valor, usuario);
     }
 }
