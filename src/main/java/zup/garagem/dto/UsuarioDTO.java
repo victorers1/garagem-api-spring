@@ -1,8 +1,6 @@
 package zup.garagem.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import zup.garagem.entity.Usuario;
 
@@ -10,7 +8,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Getter
 public class UsuarioDTO {
     private Long id;
 
@@ -26,7 +23,6 @@ public class UsuarioDTO {
     @Length(min = 11, max = 11, message = "CPF deve ter exatamente 11 dígitos")
     private String cpf;
 
-    @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date dataNascimento;
 
@@ -43,5 +39,29 @@ public class UsuarioDTO {
 
     public Usuario toUsuario() {
         return new Usuario(nome, email, cpf, dataNascimento);
+    }
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
     }
 }

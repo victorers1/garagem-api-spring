@@ -1,12 +1,9 @@
 package zup.garagem.entity;
 
-import lombok.Getter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 
-@Getter
 @Entity
 public class Veiculo {
     @Id
@@ -45,5 +42,33 @@ public class Veiculo {
         this.valor = valor;
         this.usuarioDono = usuarioDono;
         this.diaRodizio = diaRodizio;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public String getAnoModelo() {
+        return anoModelo;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public Usuario getUsuarioDono() {
+        return usuarioDono;
+    }
+
+    public DayOfWeek getDiaRodizio() {
+        return diaRodizio;
     }
 }

@@ -1,9 +1,5 @@
 package zup.garagem.dto;
 
-import lombok.Getter;
-
-
-@Getter
 public class VeiculoResponseDTO {
     private final Long id;
     private final String marca;
@@ -27,5 +23,33 @@ public class VeiculoResponseDTO {
         this.usuarioId = usuarioId;
         this.diaRodizioNome = diaRodizioNome;
         this.rodizioAtivo = rodizioAtivo;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public String getAnoModelo() {
+        return anoModelo;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public String getDiaRodizioNome() {
+        return diaRodizioNome;
+    }
+
+    public Boolean getRodizioAtivo() {
+        return rodizioAtivo;
     }
 }

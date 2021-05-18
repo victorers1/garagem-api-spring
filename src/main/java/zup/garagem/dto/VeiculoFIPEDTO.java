@@ -1,12 +1,7 @@
 package zup.garagem.dto;
 
-import lombok.Getter;
-import zup.garagem.entity.Usuario;
-import zup.garagem.entity.Veiculo;
-
 import javax.validation.constraints.NotNull;
 
-@Getter
 public class VeiculoFIPEDTO {
     private final Long id;
 
@@ -47,5 +42,45 @@ public class VeiculoFIPEDTO {
         this.MesReferencia = MesReferencia;
         this.TipoVeiculo = TipoVeiculo;
         this.SiglaCombustivel = SiglaCombustivel;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getMarca() {
+        return Marca;
+    }
+
+    public String getModelo() {
+        return Modelo;
+    }
+
+    public String getAnoModelo() {
+        return AnoModelo;
+    }
+
+    public String getValor() {
+        return Valor;
+    }
+
+    public String getCombustivel() {
+        return Combustivel;
+    }
+
+    public String getCodigoFipe() {
+        return CodigoFipe;
+    }
+
+    public String getMesReferencia() {
+        return MesReferencia;
+    }
+
+    public String getTipoVeiculo() {
+        return TipoVeiculo;
+    }
+
+    public String getSiglaCombustivel() {
+        return SiglaCombustivel;
     }
 }

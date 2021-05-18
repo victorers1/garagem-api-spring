@@ -6,7 +6,6 @@ import org.springframework.validation.BindingResult;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ListaErrosDTO {
     private final String mensagem;
     private List<ErroDTO> erros= new ArrayList<>();

@@ -1,10 +1,7 @@
 package zup.garagem.dto;
 
-import lombok.Getter;
-
 import javax.validation.constraints.NotNull;
 
-@Getter
 public class VeiculoRequestDTO {
     @NotNull(message = "marca é obrigatória")
     private String marcaId;
@@ -23,5 +20,21 @@ public class VeiculoRequestDTO {
         this.modeloId = modeloId;
         this.anoModelo = anoModelo;
         this.usuarioId = usuarioId;
+    }
+
+    public String getMarcaId() {
+        return marcaId;
+    }
+
+    public String getModeloId() {
+        return modeloId;
+    }
+
+    public String getAnoModelo() {
+        return anoModelo;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
     }
 }

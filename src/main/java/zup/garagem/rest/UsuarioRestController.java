@@ -11,7 +11,6 @@ import zup.garagem.dto.ErroDTO;
 import zup.garagem.dto.ListaErrosDTO;
 import zup.garagem.dto.UsuarioDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
-import zup.garagem.entity.Usuario;
 import zup.garagem.entity.Veiculo;
 import zup.garagem.repository.UsuarioRepository;
 import zup.garagem.repository.VeiculoRepository;

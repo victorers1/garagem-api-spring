@@ -2,13 +2,10 @@ package zup.garagem.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
-import lombok.Getter;
-import zup.garagem.dto.UsuarioDTO;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Getter
 @Entity
 public class Usuario {
     @Id
@@ -35,5 +32,25 @@ public class Usuario {
     }
 
     public Usuario() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
     }
 }
