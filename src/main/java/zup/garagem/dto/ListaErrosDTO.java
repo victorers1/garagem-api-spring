@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ListaErrosDTO {
     private final String mensagem;
-    private List<ErroDTO> erros= new ArrayList<>();
+    private final List<ErroDTO> erros = new ArrayList<>();
 
     public ListaErrosDTO(BindingResult resultadoValidacao, String msg) {
         this.mensagem = msg;

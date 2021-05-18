@@ -15,7 +15,6 @@ import zup.garagem.entity.Veiculo;
 import zup.garagem.repository.UsuarioRepository;
 import zup.garagem.repository.VeiculoRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,7 @@ public class UsuarioRestController {
         var usuariosDTO = usuarioRepository
                 .findAll()
                 .stream()
-                .map(u->usuarioController.toDTO(u))
+                .map(u -> usuarioController.toDTO(u))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(usuariosDTO);
@@ -72,7 +71,7 @@ public class UsuarioRestController {
     }
 
     @GetMapping("/{id}/veiculos")
-    public ResponseEntity<?> listarVeiculosDoUsuario(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<?> listarVeiculosDoUsuario(@PathVariable Long id) {
         var usuario = usuarioRepository.findById(id);
         if (usuario.isEmpty()) {
             var erro = new ErroDTO("Usuário", "Usuário não encontrado");
@@ -80,10 +79,7 @@ public class UsuarioRestController {
         }
 
         List<Veiculo> veiculos = veiculoRepository.findAllByUsuarioDonoId(id);
-        List<VeiculoResponseDTO> veiculosDTO = new ArrayList<>();
-        for (var veiculo : veiculos) {
-            veiculosDTO.add(veiculoController.toResponseDTO(veiculo));
-        }
+        List<VeiculoResponseDTO> veiculosDTO = veiculoController.mapToResponseDTO(veiculos);
 
         return ResponseEntity.ok(veiculosDTO);
     }

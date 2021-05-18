@@ -21,12 +21,14 @@ public class Veiculo {
 
     private String valor;
 
-    @ManyToOne @JoinColumn(name = "usuario_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuarioDono;
 
     private DayOfWeek diaRodizio;
 
-    public Veiculo(){}
+    public Veiculo() {
+    }
 
     public Veiculo(Long id,
                    String marca,

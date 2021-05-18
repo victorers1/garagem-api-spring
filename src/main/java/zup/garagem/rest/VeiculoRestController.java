@@ -38,7 +38,7 @@ public class VeiculoRestController {
         var veiculosDTO = veiculoRepository
                 .findAll()
                 .stream()
-                .map(v->veiculoController.toResponseDTO(v))
+                .map(v -> veiculoController.toResponseDTO(v))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(veiculosDTO);

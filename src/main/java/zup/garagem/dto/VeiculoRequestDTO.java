@@ -4,16 +4,16 @@ import javax.validation.constraints.NotNull;
 
 public class VeiculoRequestDTO {
     @NotNull(message = "marca é obrigatória")
-    private String marcaId;
+    private final String marcaId;
 
     @NotNull(message = "modelo é obrigatório")
-    private String modeloId;
+    private final String modeloId;
 
     @NotNull(message = "ano é obrigatório")
-    private String anoModelo;
+    private final String anoModelo;
 
     @NotNull(message = "usuario é obrigatório")
-    private Long usuarioId;
+    private final Long usuarioId;
 
     public VeiculoRequestDTO(String marcaId, String modeloId, String anoModelo, Long usuarioId) {
         this.marcaId = marcaId;

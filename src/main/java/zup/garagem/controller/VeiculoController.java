@@ -9,6 +9,8 @@ import zup.garagem.entity.Veiculo;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -25,6 +27,15 @@ public class VeiculoController {
                 diaRodizio.getDisplayName(TextStyle.FULL, Locale.getDefault()),
                 calcRodizioAtivo(diaRodizio)
         );
+    }
+
+    public List<VeiculoResponseDTO> mapToResponseDTO(List<Veiculo> veiculos) {
+        List<VeiculoResponseDTO> veiculosDTO = new ArrayList<>();
+        for (var veiculo : veiculos) {
+            veiculosDTO.add(toResponseDTO(veiculo));
+        }
+
+        return veiculosDTO;
     }
 
     public Veiculo toVeiculo(VeiculoFIPEDTO v, Usuario u) {
