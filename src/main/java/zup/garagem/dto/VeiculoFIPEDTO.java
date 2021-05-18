@@ -48,8 +48,4 @@ public class VeiculoFIPEDTO {
         this.TipoVeiculo = TipoVeiculo;
         this.SiglaCombustivel = SiglaCombustivel;
     }
-
-    public Veiculo toVeiculo(Usuario usuario) {
-        return new Veiculo(id, Marca, Modelo, AnoModelo, Valor, usuario);
-    }
 }

@@ -1,64 +1,62 @@
 package zup.garagem.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import zup.garagem.client.FIPEClient;
-import zup.garagem.dto.ErroDTO;
-import zup.garagem.dto.ListaErrosDTO;
-import zup.garagem.dto.VeiculoRequestDTO;
+import org.springframework.stereotype.Controller;
+import zup.garagem.dto.VeiculoFIPEDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
+import zup.garagem.entity.Usuario;
 import zup.garagem.entity.Veiculo;
-import zup.garagem.repository.UsuarioRepository;
-import zup.garagem.repository.VeiculoRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
-@RestController
-@RequestMapping("/veiculos")
+@Controller
 public class VeiculoController {
 
-    private final VeiculoRepository veiculoRepository;
-    private final UsuarioRepository usuarioRepository;
-    private final FIPEClient fipeClient;
-
-    public VeiculoController(VeiculoRepository veiculoRepository, UsuarioRepository usuarioRepository, FIPEClient fipeClient) {
-        this.veiculoRepository = veiculoRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.fipeClient = fipeClient;
+    public VeiculoResponseDTO toResponseDTO(Veiculo v) {
+        DayOfWeek diaRodizio = calcDiaRodizio(v.getAnoModelo());
+        return new VeiculoResponseDTO(
+                v.getId(),
+                v.getMarca(),
+                v.getModelo(),
+                v.getAnoModelo(),
+                v.getUsuarioDono().getId(),
+                diaRodizio.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                calcRodizioAtivo(diaRodizio)
+        );
     }
 
-    @GetMapping
-    public ResponseEntity<List<VeiculoResponseDTO>> listar() {
-        var veiculosDTO = veiculoRepository
-                .findAll()
-                .stream()
-                .map(Veiculo::toResponseDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(veiculosDTO);
+    public Veiculo toVeiculo(VeiculoFIPEDTO v, Usuario u) {
+        DayOfWeek diaRodizio = calcDiaRodizio(v.getAnoModelo());
+        return new Veiculo(v.getId(), v.getMarca(), v.getModelo(), v.getAnoModelo(), v.getValor(), u, diaRodizio);
     }
 
-    @PostMapping
-    public ResponseEntity<?> criar(@Validated @RequestBody VeiculoRequestDTO v, BindingResult result) {
-        if (result.hasErrors()) {
-            var erro = new ListaErrosDTO(result, "Erro ao validar veículo");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+    Boolean calcRodizioAtivo(DayOfWeek dia){
+        LocalDate hoje = LocalDate.now();
+        return hoje.getDayOfWeek() == dia;
+    }
+
+    DayOfWeek calcDiaRodizio(String ano) {
+        char ultimoDigito = ano.charAt(ano.length() - 1);
+        switch (ultimoDigito) {
+            case '0':
+            case '1':
+                return DayOfWeek.MONDAY;
+            case '2':
+            case '3':
+                return DayOfWeek.TUESDAY;
+            case '4':
+            case '5':
+                return DayOfWeek.WEDNESDAY;
+            case '6':
+            case '7':
+                return DayOfWeek.THURSDAY;
+            case '8':
+            case '9':
+                return DayOfWeek.FRIDAY;
+            default:
+                throw new RuntimeException();
         }
-
-        var usuario = usuarioRepository.findById(v.getUsuarioId());
-
-        if (usuario.isEmpty()) {
-            var erro = new ErroDTO("usuarioId", "Usuario não existe");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-        }
-
-        var veiculoFipeDTO = fipeClient.getVeiculo(v.getMarcaId(), v.getModeloId(), v.getAnoModelo());
-        var novoVeiculo = veiculoFipeDTO.toVeiculo(usuario.get());
-        novoVeiculo = veiculoRepository.save(novoVeiculo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculo.toResponseDTO());
     }
 }

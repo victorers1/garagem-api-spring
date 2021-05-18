@@ -18,8 +18,6 @@ public class VeiculoRequestDTO {
     @NotNull(message = "usuario é obrigatório")
     private Long usuarioId;
 
-    public VeiculoRequestDTO() {}
-
     public VeiculoRequestDTO(String marcaId, String modeloId, String anoModelo, Long usuarioId) {
         this.marcaId = marcaId;
         this.modeloId = modeloId;

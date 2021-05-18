@@ -36,8 +36,4 @@ public class Usuario {
 
     public Usuario() {
     }
-
-    public UsuarioDTO toDTO() {
-        return new UsuarioDTO(id, nome, email, cpf, dataNascimento);
-    }
 }
