@@ -26,7 +26,7 @@ public class UsuarioService {
         return toDTO(usuarioRepository.save(toUsuario(usuarioDTO)));
     }
 
-    public List<UsuarioDTO> findAllDTO(){
+    public List<UsuarioDTO> findAllDTO() {
         return usuarioRepository
                 .findAll()
                 .stream()

@@ -2,7 +2,6 @@ package zup.garagem.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.Length;
-import zup.garagem.entity.Usuario;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;

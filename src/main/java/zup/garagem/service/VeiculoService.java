@@ -39,7 +39,7 @@ public class VeiculoService {
         return veiculo.get();
     }
 
-    public List<VeiculoResponseDTO> findAllDTO(){
+    public List<VeiculoResponseDTO> findAllDTO() {
         return veiculoRepository
                 .findAll()
                 .stream()
@@ -47,7 +47,7 @@ public class VeiculoService {
                 .collect(Collectors.toList());
     }
 
-    public List<VeiculoResponseDTO> findAllDTOByUsuarioDonoId(Long id){
+    public List<VeiculoResponseDTO> findAllDTOByUsuarioDonoId(Long id) {
         return mapToResponseDTO(veiculoRepository.findAllByUsuarioDonoId(id));
     }
 

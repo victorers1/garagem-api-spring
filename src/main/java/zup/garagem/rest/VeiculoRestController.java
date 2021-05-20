@@ -6,11 +6,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import zup.garagem.client.FIPEClient;
-import zup.garagem.service.UsuarioService;
-import zup.garagem.service.VeiculoService;
 import zup.garagem.dto.ErrosValidacaoDTO;
 import zup.garagem.dto.VeiculoRequestDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
+import zup.garagem.service.UsuarioService;
+import zup.garagem.service.VeiculoService;
 
 import java.util.List;
 

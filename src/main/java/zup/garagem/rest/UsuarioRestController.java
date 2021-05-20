@@ -5,13 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import zup.garagem.service.UsuarioService;
-import zup.garagem.service.VeiculoService;
 import zup.garagem.dto.ErrosValidacaoDTO;
 import zup.garagem.dto.UsuarioDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
-import zup.garagem.repository.UsuarioRepository;
-import zup.garagem.repository.VeiculoRepository;
+import zup.garagem.service.UsuarioService;
+import zup.garagem.service.VeiculoService;
 
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class UsuarioRestController {
 
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> listar() {
-        var usuariosDTO =  usuarioService.findAllDTO();
+        var usuariosDTO = usuarioService.findAllDTO();
         return ResponseEntity.ok(usuariosDTO);
     }
 
@@ -44,15 +42,14 @@ public class UsuarioRestController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getUsuario(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         var usuario = usuarioService.findById(id);
-        return ResponseEntity.ok().body(usuarioService.toDTO(usuario));
+        return ResponseEntity.ok(usuarioService.toDTO(usuario));
     }
 
     @GetMapping("/{id}/veiculos")
     public ResponseEntity<?> listarVeiculosDoUsuario(@PathVariable Long id) {
-        // findById() emite erro se usuário não existe
-        usuarioService.findById(id);
+        usuarioService.findById(id); // emite erro se usuário não existe
         List<VeiculoResponseDTO> veiculosDTO = veiculoService.findAllDTOByUsuarioDonoId(id);
         return ResponseEntity.ok(veiculosDTO);
     }
