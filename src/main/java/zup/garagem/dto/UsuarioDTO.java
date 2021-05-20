@@ -37,10 +37,6 @@ public class UsuarioDTO {
     public UsuarioDTO() {
     }
 
-    public Usuario toUsuario() {
-        return new Usuario(nome, email, cpf, dataNascimento);
-    }
-
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
     }

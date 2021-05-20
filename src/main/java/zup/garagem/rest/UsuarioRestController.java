@@ -5,82 +5,55 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import zup.garagem.controller.UsuarioController;
-import zup.garagem.controller.VeiculoController;
-import zup.garagem.dto.ErroDTO;
-import zup.garagem.dto.ListaErrosDTO;
+import zup.garagem.service.UsuarioService;
+import zup.garagem.service.VeiculoService;
+import zup.garagem.dto.ErrosValidacaoDTO;
 import zup.garagem.dto.UsuarioDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
-import zup.garagem.entity.Veiculo;
 import zup.garagem.repository.UsuarioRepository;
 import zup.garagem.repository.VeiculoRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioRestController {
-    private final UsuarioRepository usuarioRepository;
-    private final UsuarioController usuarioController;
-    private final VeiculoRepository veiculoRepository;
-    private final VeiculoController veiculoController;
+    private final UsuarioService usuarioService;
+    private final VeiculoService veiculoService;
 
-    public UsuarioRestController(UsuarioRepository usuarioRepository,
-                                 VeiculoRepository veiculoRepository,
-                                 UsuarioController usuarioController,
-                                 VeiculoController veiculoController) {
-        this.usuarioRepository = usuarioRepository;
-        this.usuarioController = usuarioController;
-        this.veiculoRepository = veiculoRepository;
-        this.veiculoController = veiculoController;
+    public UsuarioRestController(UsuarioService usuarioService, VeiculoService veiculoService) {
+        this.usuarioService = usuarioService;
+        this.veiculoService = veiculoService;
     }
 
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> listar() {
-        var usuariosDTO = usuarioRepository
-                .findAll()
-                .stream()
-                .map(u -> usuarioController.toDTO(u))
-                .collect(Collectors.toList());
-
+        var usuariosDTO =  usuarioService.findAllDTO();
         return ResponseEntity.ok(usuariosDTO);
     }
 
     @PostMapping
     public ResponseEntity<?> criar(@Validated @RequestBody UsuarioDTO u, BindingResult result) {
         if (result.hasErrors()) {
-            ListaErrosDTO erro = new ListaErrosDTO(result, "Erro ao validar usuário");
+            ErrosValidacaoDTO erro = new ErrosValidacaoDTO(result, HttpStatus.BAD_REQUEST, "Erro ao validar usuário", "/usuarios");
             return ResponseEntity.badRequest().body(erro);
         }
 
-        var novoUsuario = u.toUsuario();
-        novoUsuario = usuarioRepository.save(novoUsuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioController.toDTO(novoUsuario));
+        var novoUsuarioDTO = usuarioService.salvar(u);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuarioDTO);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<?> getUsuario(@PathVariable Long id) {
-        var usuario = usuarioRepository.findById(id);
-        if (usuario.isEmpty()) {
-            var erro = new ErroDTO("Usuário", "Usuário não encontrado");
-            return ResponseEntity.badRequest().body(erro);
-        }
-
-        return ResponseEntity.ok().body(usuarioController.toDTO(usuario.get()));
+        var usuario = usuarioService.findById(id);
+        return ResponseEntity.ok().body(usuarioService.toDTO(usuario));
     }
 
     @GetMapping("/{id}/veiculos")
     public ResponseEntity<?> listarVeiculosDoUsuario(@PathVariable Long id) {
-        var usuario = usuarioRepository.findById(id);
-        if (usuario.isEmpty()) {
-            var erro = new ErroDTO("Usuário", "Usuário não encontrado");
-            return ResponseEntity.badRequest().body(erro);
-        }
-
-        List<Veiculo> veiculos = veiculoRepository.findAllByUsuarioDonoId(id);
-        List<VeiculoResponseDTO> veiculosDTO = veiculoController.mapToResponseDTO(veiculos);
-
+        // findById() emite erro se usuário não existe
+        usuarioService.findById(id);
+        List<VeiculoResponseDTO> veiculosDTO = veiculoService.findAllDTOByUsuarioDonoId(id);
         return ResponseEntity.ok(veiculosDTO);
     }
 }
