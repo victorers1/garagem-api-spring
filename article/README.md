@@ -10,17 +10,23 @@ Explique qual linguagem e quais as tecnologias do mundo Spring você usaria.
 
 Conte qual o papel das tecnologias escolhidas e quais benefícios elas trazem para a implementação do código. 
 
-### H2, Hibernate e JPA
+### Hibernate e H2 Database
+
+Usarei o Hibernate em conjunto com banco de dados H2, duas tecnologias amplamente usada em projetos Springs. O Hibernate será importante para tornar a manipulação com o banco menos trabalhosa e mais amigável ao público iniciante. Isso por que ele fornece várias das funções mais comuns já implementadas e também nos poupar de escrever comandos SQL para tarefas simples. Porém, sua maior vantagem está no fato de ser uma camada que abstrai o acesso aos dados, podendo trabalhar em conjunto com vários SGBDs e permitindo a eventual migração de um para outro.
+
+O H2 foi escolhido por ser um dos banco de dados mais simples de ser utilizado no Spring Boot. Como consequência da simplicidade, é um boa escolha quando estamos começando com Spring ou só estamos criando o protótipo de uma ideia. Ele não exige configuração alguma, basta apenas adicioná-lo às dependências do projeto, e é o mais leve das opções disponíveis. Mas calma, o H2 guarda seus dados na memória RAM, ou seja, eles não serão persistidos entre execuções do programa, tudo é apagado ao desligar o backend. Mesmo assim esrve para construir es
 
 ### Spring-Cloud-Feign
 
+
+
 ### Por que não usar Lombok
 
-Optei por **não** usar Lombok neste projeto por um único motivo. Ela é uma ferramenta muito útil para esconder o código boiler plate dos Getters, Setters e construtores, mas esta vantagem na redução do código visível pode se tornar um problema para quem está iniciando sua carreira. 
+Optei por **não** usar Lombok neste projeto por um único motivo. Ele é uma ferramenta muito útil para esconder o código boiler plate dos Getters, Setters e construtores, mas esta vantagem na redução do código visível pode se tornar um problema para quem está iniciando sua carreira. 
 
-Ao ler códigos de minha autoria e de terceiros, vi que em alguns casos as anotações eram usadas indevidamente. Notei que sempre tive preferência por usar o `@Data` por resolver na maioria dos casos, sem perceber que às vezes estava gerando métodos acessores em variáveis que não precisavam (ou sequer deviam) ser acessados, além de construtores e outras funções que não nunca eram usadas.
+Ao ler códigos de minha autoria e de terceiros, vi que em alguns casos as anotações eram usadas indevidamente. Notei que sempre tive preferência por usar o `@Data` por resolver na maioria dos casos, mas sem perceber que, às vezes, estava gerando construtores e outras funções que nunca eram usadas, além de métodos acessores em variáveis que não precisavam (ou sequer deviam) ser acessadas.
 
-Usar o Lombok *corretamente* exige assumir a responsabilidade de usar anotações que gerem exatamente o código necessário, o que requer um conhecimento aprofundado na sintaxe da ferramenta. Infelizmente, alguns programadores inadvertidamente usam-o sem saber exatamente o que está adicionando ao código. Resolvi não assumir essa responsabilidade no momento. Talvez futuramente, quando tiver mais seguro na linguagem.
+Usar o Lombok *corretamente* exige assumir a responsabilidade de usar anotações que gerem exatamente o código necessário, o que requer um conhecimento aprofundado na sintaxe da ferramenta. Infelizmente, alguns programadores inadvertidamente usam-o sem saber exatamente o que está adicionando ao código. Resolvi assumir essa responsabilidade apenas futuramente, talvez quando tiver mais seguro na linguagem.
 
 ## Implementação
 
@@ -117,9 +123,9 @@ Já no veículo, temos além do ID:
 - `String` marca: não nulo;
 - `String` modelo: não nulo;
 - `String` anoModelo: código do ano que deve ser enviado para API da FIPE, por exemplo, "2020-1". Não nulo;
-- `String` valor: preço do veículo com o 'R$' na frente. Não nulo;
+- `String` valor: preço do veículo com o 'R$' na frente. Pode ser nulo.
 - `DayOfWeek` diaRodizio: dia da semana no qual o carro pode ocupar a vaga. Não nulo.
-- `Usuario` usuario: dono do veículo. Associado a partir 
+- `Usuario` usuarioDono: o dono do veículo. Essa coluna na verdade guarda apenas o ID de um usuário existente na tabela correspondente.
 
 
 ```Java
@@ -198,6 +204,10 @@ public class Veiculo {
     }
 }
 ```
+
+Aqui, o emprego do `@ManyToOne` serve para mapear vários veículos à um usuário. Tanto essa anotação quanto a `@OneToMany` podem 
+
+Note que não tem sentido em persistir no banco o booleano indicando se o carro pode ocupar a vaga no dia de hoje, pois este valor varia todo dia. Decidi por fazer seu cálculo somente se um usuário da API requisitá-lo.
 
 ### Client REST
 
