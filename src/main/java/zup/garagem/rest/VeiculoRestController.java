@@ -5,8 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import zup.garagem.client.FIPEClient;
 import zup.garagem.dto.ErrosValidacaoDTO;
+import zup.garagem.dto.VeiculoFIPEDTO;
 import zup.garagem.dto.VeiculoRequestDTO;
 import zup.garagem.dto.VeiculoResponseDTO;
 import zup.garagem.service.UsuarioService;
@@ -43,7 +45,12 @@ public class VeiculoRestController {
 
         var usuario = usuarioService.findById(v.getUsuarioId());
 
-        var veiculoFipeDTO = fipeClient.getVeiculo(v.getMarcaId(), v.getModeloId(), v.getAnoModelo());
+        VeiculoFIPEDTO  veiculoFipeDTO;
+        try {
+            veiculoFipeDTO = fipeClient.getVeiculo(v.getMarcaId(), v.getModeloId(), v.getAnoModelo());
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado");
+        }
         var novoVeiculoDTO = veiculoService.salvarVeiculoFIPE(veiculoFipeDTO, usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoVeiculoDTO);
     }

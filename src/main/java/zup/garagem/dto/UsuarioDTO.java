@@ -36,10 +36,6 @@ public class UsuarioDTO {
     public UsuarioDTO() {
     }
 
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
     public Long getId() {
         return id;
     }
