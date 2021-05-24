@@ -48,11 +48,24 @@ Usar o Lombok *corretamente* exige assumir a responsabilidade de usar anotaçõe
 
 ### Modelo de desenvolvimento
 
-A aplicação foi desenvolvida seguindo o modelo *iterativo e incremental*.
+Quem tem experiência profissional na área tecnológica sabe que, ao lidar com clientes, não é bom deixá-lo esperando tanto tempo até ver seu produto na versão final. E, ao trabalhar com projetos ambiciosos, não tem jeito, é impossível fazer tudo de uma vez. Na nossa área, precisamos saber dividir o problema em problemas menores, tal qual faz o computador executando o merge sort.
+
+Com o problema em vista, procurei iniciar pela sua funcionalidade principal, aquela que exigisse o mínimo possível de implementação, para iniciar e, a partir disso, ir trabalhando em cima adicionando uma funcionalidade de cada vez até que atenda as especificações desejadas. Este é o modelo **iterativo e incremental**. Cada incremento vai adicionando ao sistema novas capacidades funcionais, até a obtenção do sistema final. É como executar vários  “miniprojetos” onde cada um adiciona novas funcionalidades no programa até que o mesmo esteja completo.
 
 ![modelo iterativo](img/desenvolvimento_interativo.png)
 
-"Cada incremento vai adicionando ao sistema novas capacidades funcionais, até a obtenção do sistema final. Busca contornar algumas das limitações existentes no modelo Queda d’Água e também e combinar as vantagens do modelo Prototipação. É como executar vários  “miniprojetos” onde cada um adiciona novas funcionalidades no software final até que o mesmo esteja completo. A metodologia mais conhecida no momento que segue deste modelo é a SCRUM."
+Primeiramente, notei que nada poderia ser feito sem cadastrar usuários nem veículos. Por tanto, deveria começar com um dos dois. O cadastro de veículo exige que consultemos dados numa API externa, o que requer um esforço a mais, logo foi melhor começar pelo cadastro do usuário. Isso caracterizou uma iteração do projeto. Com a iteração 1, testada e pronta, o passo seguinte foi programar o cadastro do veículo, ainda sem os detalhes vindos da FIPE. Eis outra Iteração. Abaixo deixo em detalhes o que foi feito em cada iteração:
+
+- Iteração 1: Cadastro do cliente com validação
+- Iteração 2: Tratamento dos erros de validação do cliente
+- Iteração 3: Cadastro e tratamento de erros do veículo sem dados da FIPE
+- Iteração 4: Implementação do FeignClient e obtensão dos dados da FIPE no cadastro do veículo
+- Iteração 5: Tratamento de erro em caso de falha na comunicação com a API da FIPE
+- Iteração 6: Associação de veículo cadastrado num usuário
+- Iteração 7: Implementa cálculo do dia do rodízio no DTO de resposta do veículo
+- Iteração 8: Refatorações de código e arquiteturais, pra refinar a legibilidade
+
+Tudo isso fará sentido no decorrer da leitura do artigo.
 
 ### Estrutura de pastas
 
@@ -504,7 +517,160 @@ Na criação, temos um passo a mais, pois precisamos consultar a API da FIPE pel
 
 ### Services
 
-É onde estão as regras de negócios // TODO
+Neste projeto, os Services são os responsáveis por *servir* os controllers com os dados necessários e as regras por trás do sistema. Enquanto o controlador REST escuta e responde os clientes da aplicação, os Services sabem das regras de negócio e realizam o tratamento de dados para que o controlador possa desempenhar suas atividades. Comecemos pelo `UsuarioService`.
+
+Nele, temos funções com propósitos variados. Vemos mais adiante a `toDTO()` e a `toUsuario()`, que convertem objetos de `Usuario` para suas versões DTO e vice-versa. Temos a `existe()` cujo propósito é auto explicativo, procurar se há um usuário com o dado CPF ou E-mail e retornar um booleano indicando se a busca encontrou algo. O interessante sobre ela é que é usada somente em outra função da mesma classe, a `salvar()`. Naturalmente, ao salvar um novo usuário, é necessário checar se ele tem valores inéditos de CPF e E-mail.
+
+```Java
+package zup.garagem.service;
+
+// Imports
+
+@Controller
+public class UsuarioService {
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    public UsuarioDTO salvar(UsuarioDTO usuarioDTO) {
+        if (existe(usuarioDTO)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Já existe um usuário com este CPF ou e-mail");
+        }
+        return toDTO(usuarioRepository.save(toUsuario(usuarioDTO)));
+    }
+
+    public List<UsuarioDTO> findAllDTO() {
+        return usuarioRepository
+                .findAll()
+                .stream()
+                .map(u -> toDTO(u))
+                .collect(Collectors.toList());
+    }
+
+    public Usuario findById(Long id) throws ResponseStatusException {
+        Optional<Usuario> u = usuarioRepository.findById(id);
+        if (u.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não existe");
+        }
+        return u.get();
+    }
+
+    public Boolean existe(UsuarioDTO u) {
+        return usuarioRepository.findUsuarioByCpfOrEmail(u.getCpf(), u.getEmail()).isPresent();
+    }
+
+    public Usuario toUsuario(UsuarioDTO u) {
+        return new Usuario(u.getNome(), u.getEmail(), u.getCpf(), u.getDataNascimento());
+    }
+
+    public UsuarioDTO toDTO(Usuario u) {
+        return new UsuarioDTO(u.getId(), u.getNome(), u.getEmail(), u.getCpf(), u.getDataNascimento());
+    }
+
+}
+```
+
+O `VeiculoService` evidencia ainda mais meu método de construção de um Service. Abaixo vemos várias funções que fazem consultas ao banco e retornam os dados convertidos para DTO. Isto porque essas funções foram criadas especificamente para os REST controllers, que trabalham quase sempre com os DTOS.
+
+De fato, procuro sempre criar funções que fazem exatamente o que os seus utilizadores precisam, ao invés de tentar fazer algo genérico mas que não serve diretamente ao propósito no qual foi criado. Um exemplo disso é o `findAllDTO()`, pois é isto que o controller quer, a lista de todos os veículos já convertidos em DTOs. A outra alternativa seria retornar os próprios veículos e deixar a conversão para o controller, ambas abordagens resolvem o mesmo problema e não há problemas em usar qualquer uma delas. Eu resolvi manter o código do controller o menor possível, transferindo-o para o service.
+
+```Java
+package zup.garagem.service;
+
+// Imports
+
+@Service
+public class VeiculoService {
+
+    VeiculoRepository veiculoRepository;
+
+    public VeiculoService(VeiculoRepository veiculoRepository) {
+        this.veiculoRepository = veiculoRepository;
+    }
+
+    public VeiculoResponseDTO salvarVeiculoFIPE(VeiculoFIPEDTO veiculoFipeDTO, Usuario dono) {
+        var veiculo = toVeiculo(veiculoFipeDTO, dono);
+        return toResponseDTO(veiculoRepository.save(veiculo));
+    }
+
+    public Veiculo findById(Long id) {
+        var veiculo = veiculoRepository.findById(id);
+        if (veiculo.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Veículo com não existe");
+        }
+        return veiculo.get();
+    }
+
+    public List<VeiculoResponseDTO> findAllDTO() {
+        return veiculoRepository
+                .findAll()
+                .stream()
+                .map(v -> toResponseDTO(v))
+                .collect(Collectors.toList());
+    }
+
+    public List<VeiculoResponseDTO> findAllDTOByUsuarioDonoId(Long id) {
+        return mapToResponseDTO(veiculoRepository.findAllByUsuarioDonoId(id));
+    }
+
+    public VeiculoResponseDTO toResponseDTO(Veiculo v) {
+        DayOfWeek diaRodizio = calcDiaRodizio(v.getAnoModelo());
+        return new VeiculoResponseDTO(
+                v.getId(),
+                v.getMarca(),
+                v.getModelo(),
+                v.getAnoModelo(),
+                v.getUsuarioDono().getId(),
+                diaRodizio.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                calcRodizioAtivo(diaRodizio)
+        );
+    }
+
+    public List<VeiculoResponseDTO> mapToResponseDTO(List<Veiculo> veiculos) {
+        List<VeiculoResponseDTO> veiculosDTO = new ArrayList<>();
+        for (var veiculo : veiculos) {
+            veiculosDTO.add(toResponseDTO(veiculo));
+        }
+
+        return veiculosDTO;
+    }
+
+    public Veiculo toVeiculo(VeiculoFIPEDTO v, Usuario u) throws RuntimeException {
+        DayOfWeek diaRodizio = calcDiaRodizio(v.getAnoModelo());
+        return new Veiculo(v.getId(), v.getMarca(), v.getModelo(), v.getAnoModelo(), v.getValor(), u, diaRodizio);
+    }
+
+    Boolean calcRodizioAtivo(DayOfWeek dia) {
+        LocalDate hoje = LocalDate.now();
+        return hoje.getDayOfWeek() == dia;
+    }
+
+    DayOfWeek calcDiaRodizio(String ano) throws RuntimeException {
+        char ultimoDigito = ano.charAt(ano.length() - 1);
+        switch (ultimoDigito) {
+            case '0':
+            case '1':
+                return DayOfWeek.MONDAY;
+            case '2':
+            case '3':
+                return DayOfWeek.TUESDAY;
+            case '4':
+            case '5':
+                return DayOfWeek.WEDNESDAY;
+            case '6':
+            case '7':
+                return DayOfWeek.THURSDAY;
+            case '8':
+            case '9':
+                return DayOfWeek.FRIDAY;
+            default:
+                throw new RuntimeException();
+        }
+    }
+}
+```
 
 ### Repositoty
 
@@ -600,3 +766,9 @@ Listagem dos veículos do usuário por meio do end-point `{base_url}/usuario/{id
 Como o ID do usuário já é enviado como `@PathVariable`, nada vai dentro do body.
 
 ## Conclusão
+
+Esta foi minha primeira experiência com desenvolvimento back-end não sendo guiado por algum curso da internet. Pela primeira vez, construí uma API por conta própria a partir das especificações dadas e a sensação é diferente daquela ao concluir um curso no qual os alunos copiam a maioria do código visto nas aulas. Também tive a oportunidade de descobrir o Spring Cloud Feign, que aprendi para fazer este projeto. Claro, poderia ter ficado melhor se aplicasse algumas melhorias percebidas ao longo da escrita deste artigo, mas ainda assim fiquei bem satisfeito com o resultado final.
+
+Eu sei, isso é muita coisa! Mas ninguém precisa aprender logo na primeira leitura. De uma coisa eu tenho certeza: não há como cortar caminho no aprendizado, sempre acharemos que é um processo muito lento. Independentemente do tempo que você precisar, saiba que no final terá valido a pena.
+
+Todo o código está disponível [neste repositório](https://github.com/victorers1/garagem-api-spring).

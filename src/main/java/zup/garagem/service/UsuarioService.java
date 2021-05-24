@@ -2,6 +2,7 @@ package zup.garagem.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import zup.garagem.dto.UsuarioDTO;
 import zup.garagem.entity.Usuario;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Controller
+@Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
 
