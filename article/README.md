@@ -1,4 +1,6 @@
-# Gerenciando o rodízio de vagas para veículos utilizando Java e Spring
+# Gerenciando o rodízio de vagas para veículos utilizando Spring e Java
+
+[Victor Emanuel](https://github.com/victorers1) - 24/05/2021
 
 Suponha que queremos gerenciar quais pessoas podem pôr seus veículos numa determinada garagem. Não há vagas para todo mundo, então as pessoas fazem um rodízio de automóveis. Dependendo do dia da semana, determinados carros podem usar a garagem e outros não.
 
@@ -20,11 +22,11 @@ Para exemplificar, suponha que hoje é segunda-feira, o carro é da marca Fiat, 
 
 ## Tecnologias
 
-### Spring e Java
+### Java, Kotlin ou Groovy
 
-Explique qual linguagem e quais as tecnologias do mundo Spring você usaria.
+O Spring Framework nos dá 3 opções de linguagem para trabalhar, todas elas muito boas. Então, como escolher se, na prática, qualquer uma delas serve para resolver nosso problema? Geralmente, uma linguagem é escolhida em termos da performance, tempo de uso, quantidade de programadores disponíveis no mercado e até mesmo na quantidade  material de suporte encontrado na internet… como este artigo!
 
-Conte qual o papel das tecnologias escolhidas e quais benefícios elas trazem para a implementação do código.
+Devido ao caráter introdutório deste texto, escolhi a linguagem que mais se adequa aos itens anteriores, a prova viva de que uma tecnologia não é ruim só porque é foi feita há muito tempo, o bom e velho Java. E já que o Spring permite, usaremos a versão LTS mais recente, o Java 11, para aproveitar o que há de mais atual na linguagem.
 
 ### Hibernate e H2 Database
 
@@ -61,9 +63,9 @@ Primeiramente, notei que nada poderia ser feito sem cadastrar usuários nem veí
 - Iteração 3: Cadastro e tratamento de erros do veículo sem dados da FIPE
 - Iteração 4: Implementação do FeignClient e obtensão dos dados da FIPE no cadastro do veículo
 - Iteração 5: Tratamento de erro em caso de falha na comunicação com a API da FIPE
-- Iteração 6: Associação de veículo cadastrado num usuário
+- Iteração 6: Associação de veículo cadastrado no usuário
 - Iteração 7: Implementa cálculo do dia do rodízio no DTO de resposta do veículo
-- Iteração 8: Refatorações de código e arquiteturais, pra refinar a legibilidade
+- Iteração 8: Refatorações de código e arquiteturais, para refinar a legibilidade
 
 Tudo isso fará sentido no decorrer da leitura do artigo.
 
@@ -512,7 +514,7 @@ Na criação, temos um passo a mais, pois precisamos consultar a API da FIPE pel
 - Validação do `VeiculoRequestDTO`;
 - Recupera usuário dono do veículo a partir do ID passado;
 - Dentro do try, consulta API da FIPE e constrói um DTO com os dados recebidos;
-- De posse do veículo e o usuário, ordena que o `veiculoService` salve o veículo associando-o ao seus dono;
+- De posse do veículo e o usuário, ordena que o `veiculoService` salve o veículo associando-o ao seu dono;
 - Retorna o veículo salvo ao cliente.
 
 ### Services
