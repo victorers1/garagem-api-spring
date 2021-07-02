@@ -28,8 +28,7 @@ public class UsuarioService {
     }
 
     public List<UsuarioDTO> findAllDTO() {
-        return usuarioRepository
-                .findAll()
+        return usuarioRepository.findAll()
                 .stream()
                 .map(u -> toDTO(u))
                 .collect(Collectors.toList());

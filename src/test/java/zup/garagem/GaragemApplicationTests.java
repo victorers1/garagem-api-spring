@@ -9,5 +9,4 @@ class GaragemApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
