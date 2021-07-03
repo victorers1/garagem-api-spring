@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class UsuarioServiceTest {
 
+    private static final Long ID = 1L;
     private static final String NOME = "Victor";
     private static final String EMAIL = "victor@gmail.com";
     private static final String CPF = "08398328428";
@@ -42,18 +43,22 @@ public class UsuarioServiceTest {
 
     @BeforeEach
     public void ArrangeVariables() {
-        usuario = new Usuario(NOME,
-                EMAIL,
-                CPF,
-                DATA_NASCIMENTO);
-
-        usuarioDTO = new UsuarioDTO(0L,
+        usuario = new Usuario(
                 NOME,
                 EMAIL,
                 CPF,
-                DATA_NASCIMENTO);
+                DATA_NASCIMENTO
+        );
 
-        usuarioDTONaoExiste = new UsuarioDTO(0L,
+        usuarioDTO = new UsuarioDTO(
+                ID,
+                NOME,
+                EMAIL,
+                CPF,
+                DATA_NASCIMENTO
+        );
+
+        usuarioDTONaoExiste = new UsuarioDTO(ID,
                 "Emanuel",
                 "emanuel@gmail.com",
                 "12312312312",

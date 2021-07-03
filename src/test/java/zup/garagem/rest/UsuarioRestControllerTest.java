@@ -23,10 +23,10 @@ import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UsuarioRestController.class)
 public class UsuarioRestControllerTest {
+    private static final Long ID = 1L;
     private static final String NOME = "Victor";
     private static final String EMAIL = "victor@gmail.com";
     private static final String CPF = "08398328428";
@@ -52,7 +52,7 @@ public class UsuarioRestControllerTest {
     public void ArrangeVariables() {
         usuario = new Usuario(NOME, EMAIL, CPF, DATA_NASCIMENTO);
 
-        usuarioDTO = new UsuarioDTO(0L, NOME, EMAIL, CPF, DATA_NASCIMENTO);
+        usuarioDTO = new UsuarioDTO(ID, NOME, EMAIL, CPF, DATA_NASCIMENTO);
 
         usuarios = List.of(usuario);
 
@@ -69,7 +69,7 @@ public class UsuarioRestControllerTest {
 
         // Assert
         resposta.andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(0))
+                .andExpect(jsonPath("$[0].id").value(ID))
                 .andExpect(jsonPath("$[0].nome").value(NOME))
                 .andExpect(jsonPath("$[0].email").value(EMAIL))
                 .andExpect(jsonPath("$[0].cpf").value(CPF))

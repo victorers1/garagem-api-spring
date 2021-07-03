@@ -8,8 +8,12 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-
 public class UsuarioTest {
+
+    private static final String NOME = "Victor";
+    private static final String EMAIL = "victor@gmail.com";
+    private static final String CPF = "08398328428";
+    private static final Date DATA_NASCIMENTO = new Date(96, Calendar.JUNE, 13);
 
     @Test
     public void newUsuario() {
@@ -20,15 +24,17 @@ public class UsuarioTest {
         assertNull(usuario.getDataNascimento());
         assertNull(usuario.getId());
 
-        usuario = new Usuario("Victor",
-                "victor@gmail.com",
-                "08398328428",
-                new Date(96, Calendar.JUNE, 13));
+        usuario = new Usuario(
+                NOME,
+                EMAIL,
+                CPF,
+                DATA_NASCIMENTO
+        );
 
         assertNull(usuario.getId());
-        assertEquals("Victor", usuario.getNome());
-        assertEquals("victor@gmail.com", usuario.getEmail());
-        assertEquals("08398328428", usuario.getCpf());
-        assertEquals(new Date(96, Calendar.JUNE, 13), usuario.getDataNascimento());
+        assertEquals(NOME, usuario.getNome());
+        assertEquals(EMAIL, usuario.getEmail());
+        assertEquals(CPF, usuario.getCpf());
+        assertEquals(DATA_NASCIMENTO, usuario.getDataNascimento());
     }
 }

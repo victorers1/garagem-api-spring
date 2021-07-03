@@ -14,7 +14,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 /*
 Utilizando @DataJpaTest ajuda a configurar algumas coisas automagicamente:
 * Configuração de H2 in-memory
@@ -24,39 +23,51 @@ Utilizando @DataJpaTest ajuda a configurar algumas coisas automagicamente:
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class UsuarioRepositoryTest {
+
+    private static final String NOME = "Victor";
+    private static final String EMAIL = "victor@gmail.com";
+    private static final String CPF = "08398328428";
+    private static final Date DATA_NASCIMENTO = new Date(96, Calendar.JUNE, 13);
+
     @Autowired
     UsuarioRepository usuarioRepository;
 
     @Test
-    public void insertUser(){
-        Usuario usuario = new Usuario("Victor",
-                "victor@gmail.com",
-                "08398328428",
-                new Date(96, Calendar.JUNE, 13));
+    public void insertUser() {
+        // Arrange
+        Usuario usuario = new Usuario(
+                NOME,
+                EMAIL,
+                CPF,
+                DATA_NASCIMENTO
+        );
 
+        // Act
         usuarioRepository.save(usuario);
-
         Integer countUsuarios = usuarioRepository.findAll().size();
-        assertEquals(1, countUsuarios);
-
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findUsuarioByCpfOrEmail(usuario.getCpf(), usuario.getEmail());
 
+        // Assert
+        assertEquals(1, countUsuarios);
         assertTrue(usuarioEncontrado.isPresent());
         assertEquals(usuario, usuarioEncontrado.get());
-
     }
 
     @Test
-    public void findByCpfOrEmail(){
-        Usuario usuario = new Usuario("Victor",
-                "victor@gmail.com",
-                "08398328428",
-                new Date(1996, 06, 13));
+    public void findByCpfOrEmail() {
+        // Arrange
+        Usuario usuario = new Usuario(
+                NOME,
+                EMAIL,
+                CPF,
+                DATA_NASCIMENTO
+        );
 
+        // Act
         usuarioRepository.save(usuario);
-
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findUsuarioByCpfOrEmail(usuario.getCpf(), usuario.getEmail());
 
+        // Assert
         assertTrue(usuarioEncontrado.isPresent());
         assertEquals(usuario, usuarioEncontrado.get());
     }
