@@ -1,37 +1,45 @@
 package zup.garagem.rest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import zup.garagem.dto.UsuarioDTO;
 import zup.garagem.entity.Usuario;
 import zup.garagem.service.UsuarioService;
 import zup.garagem.service.VeiculoService;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//TODO: aprender testes de unidades em Controllers usando Mockito
 
-@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UsuarioRestController.class)
 public class UsuarioRestControllerTest {
     private static final String NOME = "Victor";
     private static final String EMAIL = "victor@gmail.com";
     private static final String CPF = "08398328428";
-    private static final Date DATA_NASCIMENTO = new Date(1996, 06, 13);
+    private static final Date DATA_NASCIMENTO = new Date(96, Calendar.JUNE, 13);
+
     Usuario usuario;
+
+    UsuarioDTO usuarioDTO;
+
+    List<Usuario> usuarios;
+
+    List<UsuarioDTO> usuariosDTO;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -40,37 +48,31 @@ public class UsuarioRestControllerTest {
     @MockBean
     private VeiculoService veiculoService;
 
-    @Test
-    public void UsuarioToDTO() {
-        Usuario usuario = new Usuario(NOME,
-                EMAIL,
-                CPF,
-                DATA_NASCIMENTO);
+    @BeforeEach
+    public void ArrangeVariables() {
+        usuario = new Usuario(NOME, EMAIL, CPF, DATA_NASCIMENTO);
 
-        BDDMockito.given(usuarioService.toDTO(Mockito.any(Usuario.class))).willReturn();
+        usuarioDTO = new UsuarioDTO(0L, NOME, EMAIL, CPF, DATA_NASCIMENTO);
 
-        UsuarioDTO usuarioDTO = usuarioService.toDTO(usuario);
-        assertEquals(NOME, usuarioDTO.getNome());
-        assertEquals(EMAIL, usuarioDTO.getEmail());
-        assertEquals(CPF, usuarioDTO.getCpf());
-        assertEquals(DATA_NASCIMENTO, usuarioDTO.getDataNascimento());
+        usuarios = List.of(usuario);
+
+        usuariosDTO = List.of(usuarioDTO);
     }
 
     @Test
     public void findAllUsuarios() throws Exception {
-        Usuario usuario = new Usuario(NOME,
-                EMAIL,
-                CPF,
-                DATA_NASCIMENTO);
-
-        List<Usuario> usuarios = List.of(usuario);
-
-        List<UsuarioDTO> usuariosDTO = usuarios.stream().map(u -> usuarioService.toDTO(u)).collect(Collectors.toList());
-
+        // Arrange
         BDDMockito.given(usuarioService.findAllDTO()).willReturn(usuariosDTO);
-    }
 
-    @Test
-    public void findUsuarioByCpfOrEmail() throws Exception {
+        // Act
+        ResultActions resposta = mockMvc.perform(MockMvcRequestBuilders.get("/usuarios"));
+
+        // Assert
+        resposta.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(0))
+                .andExpect(jsonPath("$[0].nome").value(NOME))
+                .andExpect(jsonPath("$[0].email").value(EMAIL))
+                .andExpect(jsonPath("$[0].cpf").value(CPF))
+                .andExpect(jsonPath("$[0].dataNascimento").value("13-06-1996"));
     }
 }

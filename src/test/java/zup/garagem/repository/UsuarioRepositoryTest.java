@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import zup.garagem.entity.Usuario;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class UsuarioRepositoryTest {
         Usuario usuario = new Usuario("Victor",
                 "victor@gmail.com",
                 "08398328428",
-                new Date(1996, 06, 13));
+                new Date(96, Calendar.JUNE, 13));
 
         usuarioRepository.save(usuario);
 

@@ -2,6 +2,7 @@ package zup.garagem.entity;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,12 +23,12 @@ public class UsuarioTest {
         usuario = new Usuario("Victor",
                 "victor@gmail.com",
                 "08398328428",
-                new Date(1996, 06, 13));
+                new Date(96, Calendar.JUNE, 13));
 
         assertNull(usuario.getId());
         assertEquals("Victor", usuario.getNome());
         assertEquals("victor@gmail.com", usuario.getEmail());
         assertEquals("08398328428", usuario.getCpf());
-        assertEquals(new Date(1996, 06, 13), usuario.getDataNascimento());
+        assertEquals(new Date(96, Calendar.JUNE, 13), usuario.getDataNascimento());
     }
 }
