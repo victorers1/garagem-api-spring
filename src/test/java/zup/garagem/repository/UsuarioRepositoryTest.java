@@ -65,9 +65,11 @@ public class UsuarioRepositoryTest {
 
         // Act
         usuarioRepository.save(usuario);
+        Integer countUsuarios = usuarioRepository.findAll().size();
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findUsuarioByCpfOrEmail(usuario.getCpf(), usuario.getEmail());
 
         // Assert
+        assertEquals(1, countUsuarios);
         assertTrue(usuarioEncontrado.isPresent());
         assertEquals(usuario, usuarioEncontrado.get());
     }

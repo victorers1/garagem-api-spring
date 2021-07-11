@@ -76,7 +76,7 @@ public class VeiculoService {
 
     public Veiculo toVeiculo(VeiculoFIPEDTO v, Usuario u) throws RuntimeException {
         DayOfWeek diaRodizio = calcDiaRodizio(v.getAnoModelo());
-        return new Veiculo(v.getId(), v.getMarca(), v.getModelo(), v.getAnoModelo(), v.getValor(), u, diaRodizio);
+        return new Veiculo(v.getMarca(), v.getModelo(), v.getAnoModelo(), v.getValor(), u, diaRodizio);
     }
 
     Boolean calcRodizioAtivo(DayOfWeek dia) {

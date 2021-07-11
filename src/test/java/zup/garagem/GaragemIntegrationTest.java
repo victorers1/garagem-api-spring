@@ -18,6 +18,9 @@ import java.util.Date;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @AutoConfigureMockMvc
+// By default, @SpringBootTest does not start a server. We need to add attribute webEnvironment to further refine how your tests run
+// MOCK(Default): Loads a web ApplicationContext and provides a mock web environment
+// RANDOM_PORT: Loads a WebServerApplicationContext and provides a real web environment. The embedded server is started and listen on a random port. This is the one should be used for the integration test
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = GaragemApplication.class
@@ -27,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GaragemIntegrationTest {
 
     private static final Long ID = 1L;
-
     private static final String NOME = "Victor";
     private static final String EMAIL = "victor@gmail.com";
     private static final String CPF = "08398328428";
@@ -58,11 +60,3 @@ public class GaragemIntegrationTest {
     }
 
 }
-
-/**
- * "id": 1,
- * "nome": "Maria",
- * "email": "maria@gmail.com",
- * "cpf": "88131464008",
- * "dataNascimento": "01-01-1970"
- */

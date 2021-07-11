@@ -16,13 +16,13 @@ public class UsuarioTest {
     private static final Date DATA_NASCIMENTO = new Date(96, Calendar.JUNE, 13);
 
     @Test
-    public void newUsuario() {
+    public void newEmptyUsuario() {
         Usuario usuario = new Usuario();
+        assertNull(usuario.getId());
         assertNull(usuario.getNome());
         assertNull(usuario.getEmail());
         assertNull(usuario.getCpf());
         assertNull(usuario.getDataNascimento());
-        assertNull(usuario.getId());
 
         usuario = new Usuario(
                 NOME,

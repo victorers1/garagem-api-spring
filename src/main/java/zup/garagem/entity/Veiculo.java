@@ -30,14 +30,13 @@ public class Veiculo {
     public Veiculo() {
     }
 
-    public Veiculo(Long id,
-                   String marca,
-                   String modelo,
-                   String anoModelo,
-                   String valor,
-                   Usuario usuarioDono,
-                   DayOfWeek diaRodizio) {
-        this.id = id;
+    public Veiculo(
+            String marca,
+            String modelo,
+            String anoModelo,
+            String valor,
+            Usuario usuarioDono,
+            DayOfWeek diaRodizio) {
         this.marca = marca;
         this.modelo = modelo;
         this.anoModelo = anoModelo;
